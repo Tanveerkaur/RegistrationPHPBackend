@@ -1,0 +1,216 @@
+<html>
+	<head>
+		<title>User Registration</title>
+		<meta charset="UTF-8">
+		<style>
+			#container{
+				width: 700px;
+				height: 100%;
+				margin: 0 auto;
+				padding: 10px;
+			}
+			button{
+				padding: 2px 25px;
+				border-radius: 5px;
+			}
+			input, select{
+				width: 250px; 
+				height: 22px;
+			}
+			progress{
+/*				/*To reset the default styles, we simply set -webkit-appearance to none.*/
+				-webkit-appearance: none; 
+   				appearance: none;
+				height: 22px;
+				width: 150px;
+				background-color: #4CAF50;
+			}
+			#img1, #img2, #img3{
+				float: left;
+				width: 50px;
+				height: 50px;
+				margin: 5px;
+				border: 2px solid blue;
+			}
+			#msg{
+				float: left;
+				width: 50px;
+				height: 50px;
+				margin: 5px;
+				border: 2px solid black;
+			}
+		</style>
+		<script src="modernizr.js"></script>
+		<script type="text/javascript">
+
+		if (!Modernizr.localstorage) {
+			alert('Your Browser Doesn\'t Support Local Storage.');
+		}
+
+		function checkPasswordStrength(){
+			var strengthBar = document.getElementById("pwdStrength");
+			var pwdInput = document.getElementById("pwd").value;
+
+			var enough = /(?=(.*[a-z]){5,})(?=(.*[0-9]){1,})(?=(.*[@#$%]){1,})/;
+			var medium = /(?=(.*[A-Z]){1,})(?=(.*[0-9]){2,})(?=(.*[a-z]){4,})(?=(.*[@#$%]){2,})/;
+			var strong = /(?=(.*[A-Z]){3,})(?=(.*[0-9]){3,})(?=(.*[a-z]){2,})(?=(.*[@#$%]){3,})/;
+
+			if(strong.test(pwdInput)) {
+				console.log("100");
+				strengthBar.value = 100;
+			} else if (medium.test(pwdInput)) {
+				console.log("90");
+				strengthObject.value = 90;
+			} else if (enough.test(pwdInput)) {
+				console.log("80");
+				strengthBar.value = 80;
+			} else {
+				strengthBar.value = 50;
+			}
+
+		}
+		function validatePassword(){
+			var pwd = document.getElementById("pwd").value;
+			var vpwd = document.getElementById("vpwd").value;
+
+			if(pwd == vpwd){
+				var msg = document.getElementById("pwdVerificationMsg");
+				msg.innerHTML = "Password Matches!";
+				msg.style.color = "Green";
+			}else{
+				var msg = document.getElementById("pwdVerificationMsg");
+				msg.innerHTML = "Password doesn't Match!";	
+				msg.style.color = "Red";
+			}
+		}
+		function validateEmail(){
+			var email = document.getElementById("email").value;
+			var vemail = document.getElementById("vemail").value;
+			if(email == vemail){
+				var msg = document.getElementById("verificationMsg");
+				msg.innerHTML = "Email Address Matches!";
+				msg.style.color = "Green";
+			}else{
+				var msg = document.getElementById("verificationMsg");
+				msg.innerHTML = "Email Address doesn't Match!";
+				msg.style.color = "Red";
+			}
+		}
+		</script>
+		<script type="text/javascript" src="script/jquery-2.2.2.min.js"></script>
+		<script>
+			function chk(){
+				var uid = document.getElementById('uid').value;
+				var email = document.getElementById('email').value;
+				var vemail = document.getElementById('vemail').value;
+				var password = document.getElementById('pwd').value;
+				var vpassword = document.getElementById('vpwd').value;
+				var mobNum = document.getElementById('mobile').value;
+				var address = document.getElementById('address').value;
+				var dataString = 'uid='+ uid + '&email' + email + '&vemail' + vemail + '&password' + pwd + '&vpasssword' +vpwd + '&mobile' + mobNum + '&address' + address;
+				$.ajax({
+					type:"post",
+					url: "ajaxjs.php"
+					data: dataString,
+					cache: false,
+					success: function(html){
+						$('#ack').html(html);
+					}
+				});
+				return false;
+			}
+		</script>
+	</head>
+	<body>
+		<form name="myform" action="ajaxjs.php" method="post">
+			<div id="container">
+				<h2>Registration</h2><hr><br>
+				User ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="uid" name="username" placeholder="Enter User Name" required><br><br>				
+				Email Address&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="email" id="email" name="email_add" placeholder="Enter Email Address" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" required ><br><br>
+				
+				Verify Email Address&nbsp;&nbsp;&nbsp;&nbsp;<input type="email" id="vemail" name="vemail_add" required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$" placeholder="Must be same as Email Address" title="Enter the same email address as above">&nbsp;&nbsp;&nbsp;
+				
+				<span id="verificationMsg"></span><br><br>
+				
+				Password&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="password" id="pwd" name="password" placeholder="Enter password" required onkeyup="validateEmail();"  title="Must be between 7-20 characters in length and include 4 alpha characters; 1 numeric character(0,9) or 1 special character (!,#,$,%). The password is case sensitive and must not contain spaces or be the same as your user id">&nbsp;&nbsp;&nbsp;
+
+				<progress id="pwdStrength" value="0" max="100"></progress> <br><br>
+				
+				Verify Password&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="password" id="vpwd" name="vpassword" required placeholder="Must be same as password" onkeyup="checkPasswordStrength();">
+
+				<span id="pwdVerificationMsg"></span><br><br>
+				
+				Security Question&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<select onkeyup= "validatePassword();">
+						<option value="Sum of 100 + 200" name="opt1">Sum of 100 + 200</option>
+						<option value="23 * 100 = " name="opt2">23 * 100 = </option>
+						<option value="Capital of India?" name="opt3">Capital of India?</option>
+						<option value="Capital of USA?" name="opt4">Capital of USA?</option>
+						</select><br><br>
+				
+				Security Answer&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="text" id="sec_question" required title="Please answer a security question"><br><br>
+				
+				Mobile Number&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="tel" id="mob" name="mobile" placeholder="###-###-####" required pattern="[0-9]{3}[0-9]{3}[0-9]{4}" title="Required format ###-###-####"> <br><br>
+				
+				Address&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<textarea name="address" id="address" cols="33" rows="5" required></textarea> 
+				
+				<!-- Drag one item <br><br> -->
+				<div id="src">
+					<img id="img1" src="./images/cisco.jpg" alt="img_cisco">
+					<img id="img2" src="./images/sjsu.jpg" alt="img_sjsu">
+					<img id="img3" src="./images/google.jpg" alt="img_google">
+	
+					<br><br><br><br>
+					Drop it in the box below <br><br>
+				    <div id="target">
+	        			<p id="msg">Drop Here</p>
+	    			</div>
+				</div> <br><br><br><br>
+				
+				<input type="submit" value="Register" onclick=chk();>
+				<input type="reset" name="reset">
+			</form>
+			<p id="ack"></p>
+		</div>
+		<script>
+			var src = document.getElementById("src");
+			var target = document.getElementById("target");
+			var msg = document.getElementById("msg");
+			var draggedID;
+			target.ondragenter = handleDrag;
+			target.ondragover = handleDrag;
+
+			target.ondrop = function (e) {
+				var newElem = document.getElementById(draggedID).cloneNode(false);
+				target.innerHTML = "";
+				target.appendChild(newElem);
+				//document.getElementById(draggedID).remove();
+				e.preventDefault();
+			}
+
+			function handleDrag(e) {
+				e.preventDefault();
+			}
+
+			src.ondragstart = function (e) {
+				draggedID = e.target.id;
+				e.target.classList.add("dragged");
+			}
+			src.ondragend = function (e) {
+				var elems = document.querySelectorAll(".dragged");
+				for (var i = 0; i < elems.length; i++) {
+					elems[i].classList.remove("dragged");
+				}
+			}
+
+			function ValidCaptcha() {
+	            var src = document.getElementById("src");
+	            var target = document.getElementById("target");
+        	}
+
+        	// Remove the spaces from the entered and generated code
+        	function removeSpaces(string) {
+           		return string.split(' ').join('');
+        	}
+		</script>
+	</body>
+</html>
